@@ -1,13 +1,24 @@
 import express from 'express';
-import bodyParser from 'body-parser';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import router from './routes/routes.js';
 
+dotenv.config();
 const app = express();
-app.use(bodyParser.json());
 
-app.listen(3000, () => {
+const loggingMiddleware = (req, res, next) => {
+    console.log(`${req.method} - ${req.url} - ${new Date().toTimeString()}`);
+    next();
+};
+app.use(loggingMiddleware);
+app.use(express.json());
+app.use(cors());
+app.use(router);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
     console.log("listening on port 3000");
 });
 
-app.get('/', (req, res) => {
-    res.send('Hello World');
-});
+
+
