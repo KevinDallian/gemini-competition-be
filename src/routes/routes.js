@@ -1,5 +1,5 @@
 import { Router } from "express";
-import GeminiRoutes from './GeminiRoutes.js';
+import GeminiRoutes from './Gemini/GeminiRoutes.js';
 
 const router = Router();
 router.use(GeminiRoutes);
