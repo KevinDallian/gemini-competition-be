@@ -4,50 +4,61 @@ class Parser {
         var i = -1;
         longText.forEach(line => {
             if (line.includes('##')) {
-                processedData.title = this.parseTitle(line);
-            } else if (line.includes('#')) {
-                i++;
-                if (!processedData.days) {
-                    processedData.days = [];
+                if (line.includes('Day')) {
+                    i++;
+                    if (!processedData.destinations) {
+                        processedData.destinations = [];
+                    }
+                    processedData.destinations.push({day : this.parseDay(line)})
+                } else {
+                    processedData.title = this.parseTitle(line);
                 }
-                processedData.days.push({day : this.parseDay(line)})
+            } else if (line.includes('Average rating')){
+                processedData.avgRating = this.parseColon(line);
+            } else if (line.includes('Average physical intensity')){
+                processedData.avgPhysical = this.parseColon(line);
+            } else if (line.includes('Overall description')){
+                processedData.overallDescription = this.parseColon(line);
             } else if (line.includes('Activity Recommendation')) {
-                processedData.days[i].activities = this.parseComma(line);
+                processedData.destinations[i].activities = this.parseComma(line);
             } else if (line.includes('Items')) {
-                processedData.days[i].items = this.parseComma(line);
+                processedData.destinations[i].items = this.parseComma(line);
             } else if (line.includes('Destination')){
-                processedData.days[i].destination = this.parseColon(line);
+                processedData.destinations[i].destination = this.parseColon(line);
             } else if (line.includes('Description')){
-                processedData.days[i].description = this.parseColon(line);   
+                processedData.destinations[i].description = this.parseColon(line);   
             } else if (line.includes('Rating from 1-5')){
-                processedData.days[i].rating = this.parseColon(line);
+                processedData.destinations[i].rating = this.parseColon(line);
             } else if (line.includes('Budget')){
-                processedData.days[i].budget = this.parseColon(line);
+                processedData.destinations[i].budget = this.parseColon(line);
             } else if (line.includes('Physical Intensity from 1-5')){
-                processedData.days[i].intensity = this.parseColon(line);
+                processedData.destinations[i].intensity = this.parseColon(line);
+            } else if (line.includes('Address')){
+                processedData.destinations[i].address = this.parseColon(line);
             }
         });
         return processedData;
     }
 
     parseTitle(text) {
-        const parts = text.split('##');
-        return parts[1].trim();
+        const parts = text.split('##')[1].trim();
+        return parts;
     }
 
     parseDay(text) {
-        const parts = text.split('#');
-        return parts[1].trim();
+        const parts = text.split('##')[1].trim();
+        return parts;
     }
 
     parseColon(text) {
-        const splittedText = text.split(':').filter((line) => line !== '');
-        return splittedText[1].trim();
+        const splittedText = text.split(': ').filter((line) => line !== '');
+        return splittedText[1];
     }
 
     parseComma(text){
-        const splittedText = this.parseColon(text).split(', ');
-        return splittedText;
+        const splittedText = this.parseColon(text);
+        const split = splittedText.split(', ');
+        return split;
     }
 }
 
