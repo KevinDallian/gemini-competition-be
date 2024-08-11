@@ -5,18 +5,6 @@ import Parser from "../../models/Parser.js";
 dotenv.config();
 
 class GeminiController{
-    states = {
-        TITLE: 'title',
-        DAY: 'day',
-        DESTINATION: 'destination',
-        DESCRIPTION: 'description',
-        RATING: 'rating',
-        BUDGET: 'budget',
-        INTENSITY: 'intensity',
-        ACTIVITY: 'activity',
-        ITEMS: 'items',
-    };
-
     constructor(){
         this.geminiAI = new GeminiAI(process.env.APIKEY);
     }

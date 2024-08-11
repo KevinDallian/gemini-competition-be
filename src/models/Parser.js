@@ -1,15 +1,22 @@
 class Parser {
     processData(longText) {
+        function hasDuplicateString(array, property) {
+            return array.some((item, index, arr) => {
+                return arr.findIndex(innerItem => innerItem[property] === item[property]) !== index;
+            });
+        }
         const processedData = {}
-        var i = -1;
+        var dayCounter = -1;
+        var destinationCounter = -1;
         longText.forEach(line => {
             if (line.includes('##')) {
                 if (line.includes('Day')) {
-                    i++;
-                    if (!processedData.destinations) {
-                        processedData.destinations = [];
+                    dayCounter++;
+                    destinationCounter = -1;
+                    if (!processedData.days) {
+                        processedData.days = [];
                     }
-                    processedData.destinations.push({day : this.parseDay(line)})
+                    processedData.days.push({day : this.parseDay(line)});
                 } else {
                     processedData.title = this.parseTitle(line);
                 }
@@ -20,28 +27,34 @@ class Parser {
             } else if (line.includes('Overall description')){
                 processedData.overallDescription = this.parseColon(line);
             } else if (line.includes('Activity Recommendation')) {
-                processedData.destinations[i].activities = this.parseComma(line);
+                processedData.days[dayCounter].destinations[destinationCounter].activity = this.parseComma(line);
             } else if (line.includes('Items')) {
-                processedData.destinations[i].items = this.parseComma(line);
+                processedData.days[dayCounter].destinations[destinationCounter].items = this.parseComma(line);
             } else if (line.includes('Destination')){
-                processedData.destinations[i].destination = this.parseColon(line);
+                destinationCounter++;
+                if (!processedData.days[dayCounter].destinations) {
+                    processedData.days[dayCounter].destinations = [];
+                }
+                processedData.days[dayCounter].destinations.push({name : this.parseColon(line)}); 
             } else if (line.includes('Description')){
-                processedData.destinations[i].description = this.parseColon(line);   
+                processedData.days[dayCounter].destinations[destinationCounter].description = this.parseColon(line);   
             } else if (line.includes('Rating from 1-5')){
-                processedData.destinations[i].rating = this.parseColon(line);
+                processedData.days[dayCounter].destinations[destinationCounter].rating = this.parseColon(line);
             } else if (line.includes('Budget')){
-                processedData.destinations[i].budget = this.parseColon(line);
+                processedData.days[dayCounter].destinations[destinationCounter].budget = this.parseColon(line);
             } else if (line.includes('Physical Intensity from 1-5')){
-                processedData.destinations[i].intensity = this.parseColon(line);
+                processedData.days[dayCounter].destinations[destinationCounter].intensity = this.parseColon(line);
             } else if (line.includes('Address')){
-                processedData.destinations[i].address = this.parseColon(line);
+                processedData.days[dayCounter].destinations[destinationCounter].address = this.parseColon(line);
             }
         });
         return processedData;
     }
 
     parseTitle(text) {
+        console.log(`Parsing Title ${text}`);
         const parts = text.split('##')[1].trim();
+        console.log(`Parsed Title == ${parts}`);
         return parts;
     }
 
