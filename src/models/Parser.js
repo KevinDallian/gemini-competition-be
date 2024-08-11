@@ -52,9 +52,7 @@ class Parser {
     }
 
     parseTitle(text) {
-        console.log(`Parsing Title ${text}`);
         const parts = text.split('##')[1].trim();
-        console.log(`Parsed Title == ${parts}`);
         return parts;
     }
 
